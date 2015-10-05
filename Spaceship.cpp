@@ -21,9 +21,9 @@ void Spaceship::draw()
 		display_list_handle = glGenLists(1);
 		glNewList(display_list_handle, GL_COMPILE);
 		glColor3d(1.0, 0.0, 0.0);
-		glScaled(1.0, 4.0, 1.0);
+		glScaled(1.1, 4.0, 1.1);
 		gluSphere(q, 1.0, 50, 50);
-		glScaled(1.0, 0.25, 1.0);
+		glScaled(0.91, 0.25, 0.91);
 		glPushMatrix();
 		glTranslated(0.0, -1.75, 0.0);
 		for (int i = 0; i <= 3; i++)
@@ -53,12 +53,12 @@ void Spaceship::drawEngine(/*GLUquadric* &q*/)
 	glTranslated(-2.0, 0.0, 0.0);
 	//draw
 	glScaled(0.5, 0.5, 0.5);
-	gluSphere(q, 1.0, 50, 50);
+	gluSphere(q, 1.0, 10, 10);
 	glTranslated(0.0, -3.0, 0.0);
-	gluSphere(q, 1.0, 50, 50);
+	gluSphere(q, 1.0, 10, 10);
 	glTranslated(0.0, 2.75, 0.0);
 	glRotated(90, 1.0, 0.0, 0.0);
-	gluCylinder(q, 1.0, 1.0, 3.0, 50, 50);
+	gluCylinder(q, 1.0, 1.0, 3.0, 10, 10);
 	glPopMatrix();
 	gluDeleteQuadric(q);
 }
@@ -70,7 +70,7 @@ void Spaceship::drawConnector()
 	glColor3d(0.0, 0.0, 1.0);
 	glTranslated(0.0, -1.0, 0.0);
 	glScaled(1.0, 0.5, 0.1);
-	gluCylinder(q, 2.0, 0.2, 2.5, 50, 50);
+	gluCylinder(q, 2.0, 0.2, 2.5, 10, 10);
 	//glutSolidCone(1.0, 2.5, 50, 50);
 	glPopMatrix();
 	gluDeleteQuadric(q);
