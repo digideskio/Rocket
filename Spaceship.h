@@ -9,5 +9,5 @@ public:
 	void draw();
 private:
 	void drawEngine(/*GLUquadric* &q*/);
-	void drawCone();
+	void drawConnector();
 };

@@ -30,7 +30,7 @@ void Spaceship::draw()
 		{
 			glRotated(90, 0.0, 1.0, 0.0);
 			drawEngine();
-			drawCone();
+			drawConnector();
 			//glutSolidCone(1.0, 2.0, 50, 50);
 		}
 		glPopMatrix();
@@ -63,11 +63,15 @@ void Spaceship::drawEngine(/*GLUquadric* &q*/)
 	gluDeleteQuadric(q);
 }
 
-void Spaceship::drawCone()
+void Spaceship::drawConnector()
 {
+	GLUquadric* q = gluNewQuadric();
 	glPushMatrix();
 	glColor3d(0.0, 0.0, 1.0);
 	glTranslated(0.0, -1.0, 0.0);
-	glutSolidCone(1.0, 2.5, 50, 50);
+	glScaled(1.0, 0.5, 0.1);
+	gluCylinder(q, 2.0, 0.2, 2.5, 50, 50);
+	//glutSolidCone(1.0, 2.5, 50, 50);
 	glPopMatrix();
+	gluDeleteQuadric(q);
 }
