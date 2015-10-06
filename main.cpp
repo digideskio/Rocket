@@ -127,15 +127,30 @@ void DisplayFunc2()
 	glLoadIdentity();
 	gluLookAt(0.0, 0.0, 0.0, w2 / 4.0, 0.0, 0.0, 0.0, 1.0, 0.0);
 	GLUquadric* q = gluNewQuadric();
-	glTranslated(30.0, 0.0, 5.0);
+	glTranslated(60.0, 0.0, 0.0);
 	glPushMatrix();
 	wireframe_mode = true;
-	gluSphere(q, 5, 50, 50);
+	gluSphere(q, 15.0, 50, 50);
 	glPopMatrix();
 	//second camera
-	
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	gluPerspective(40, w2 / double(h2), 1.0, 100.0);
+	glViewport(0, 10, w2, h2);
+	glEnable(GL_DEPTH_TEST);
+
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	gluLookAt(0.0, 0.0, 200.0, w2 * 0.75, 0.0, 0.0, 0.0, 1.0, 0.0);
+	GLUquadric* q2 = gluNewQuadric();
+	glTranslated(60.0, 0.0, 200.0);
+	glPushMatrix();
+	wireframe_mode = true;
+	gluSphere(q2, 15.0, 50, 50);
+	glPopMatrix();
 
 	gluDeleteQuadric(q);
+	gluDeleteQuadric(q2);
 	glutSwapBuffers();
 }
 
@@ -197,7 +212,7 @@ int main(int argc, char* argv[])
 
 	//glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH);
-	glutInitWindowPosition(600, 0);
+	glutInitWindowPosition(512, 0);
 	glutInitWindowSize(w2, h2);
 	win2 = glutCreateWindow("Third-Person");
 	glutTimerFunc(1000 / 60, TimerFunc, 1000 / 60);
