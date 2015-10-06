@@ -13,6 +13,7 @@ int height = 512;
 GLuint win1;
 //GLuint win2;
 bool wireframe_mode = true;
+Spaceship ships[2];
 
 void TimerFunc(int period)
 {
@@ -60,33 +61,36 @@ void DisplayFunc()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gluPerspective(100.0, width / double(height), 1.0, 100.0);
+	gluPerspective(40.0, width / double(height), 1.0, 100.0);
 	glViewport(0, 10, width, height);
 	glEnable(GL_DEPTH_TEST);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	gluLookAt(0.0, 0.0, 4.5, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+	gluLookAt(0.0, 0.0, 6.5, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
 	glTranslated(0.0, 0.0, -5.0);
 	glPushMatrix();
-	glTranslated(-11.0, -5.0, 0.0);
+	glTranslated(-11.0, -3.0, 0.0); //this translated was apparently so that the 4x4 grid would be more centered
 	for (int i = 0; i < 4; i++)
 	{
 		for (int j = 0; j < 4; j++)
 		{
 			//glTranslated(7.5, 0.0, 0.0);
-			Spaceship s1;
-			s1.draw();
+			//Spaceship s1;
+			ships[0].draw();
+			//GLUquadric* q = gluNewQuadric();
+			//gluSphere(q, 1.0, 10, 10);
 			glTranslated(7.5, 0.0, 0.0);
 		}
 		if (i % 2 == 0)
 		{
 			glTranslated(0.0, 0.0, -7.5);
 			glRotated(180.0, 0.0, 1.0, 0.0);
+			glTranslated(7.5, 0.0, 0.0);
 		}
 		else
 		{
 			glRotated(180.0, 0.0, 1.0, 0.0);
-			glTranslated(0.0, 0.0, -7.5);
+			glTranslated(7.5, 0.0, -7.5);
 		}
 	}
 	glPopMatrix();
