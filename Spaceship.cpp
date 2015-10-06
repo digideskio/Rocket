@@ -20,12 +20,13 @@ void Spaceship::draw()
 		GLUquadric* q = gluNewQuadric();
 		display_list_handle = glGenLists(1);
 		glNewList(display_list_handle, GL_COMPILE);
-		glColor3d(1.0, 0.0, 0.0);
+		glColor3d(1.0, 0.0, 0.0); //bright red
 		glScaled(1.1, 4.0, 1.1);
 		gluSphere(q, 1.0, 50, 50);
-		glScaled(0.91, 0.25, 0.91);
+		glScaled(0.91, 0.25, 0.91); //cancel out previous gluScaled
 		glPushMatrix();
-		glTranslated(0.0, -1.75, 0.0);
+		glTranslated(0.0, -1.75, 0.0); //move the origin to an easier place for the engines and connectors
+		//rotate, draw an engine and its connector, repeat until the rocket is complete
 		for (int i = 0; i <= 3; i++)
 		{
 			glRotated(90, 0.0, 1.0, 0.0);
@@ -42,14 +43,14 @@ void Spaceship::draw()
 		glEndList();
 		gluDeleteQuadric(q);
 	}
-	glCallList(display_list_handle);
+	glCallList(display_list_handle); //draw a rocket based on the math above if that math has already been done
 }
 
-void Spaceship::drawEngine(/*GLUquadric* &q*/)
+void Spaceship::drawEngine()
 {
 	GLUquadric* q = gluNewQuadric();
 	glPushMatrix();
-	glColor3d(0.0, 1.0, 0.0);
+	glColor3d(0.0, 1.0, 0.0); //bright green
 	glTranslated(-2.0, 0.0, 0.0);
 	//draw
 	glScaled(0.5, 0.5, 0.5);
@@ -67,7 +68,7 @@ void Spaceship::drawConnector()
 {
 	GLUquadric* q = gluNewQuadric();
 	glPushMatrix();
-	glColor3d(0.0, 0.0, 1.0);
+	glColor3d(0.0, 0.0, 1.0); //bright blue
 	glTranslated(0.0, -1.0, 0.0);
 	glScaled(1.0, 0.5, 0.1);
 	gluCylinder(q, 2.0, 0.2, 2.5, 10, 10);

@@ -8,6 +8,6 @@ public:
 	void position();
 	void draw();
 private:
-	void drawEngine(/*GLUquadric* &q*/);
+	void drawEngine();
 	void drawConnector();
 };

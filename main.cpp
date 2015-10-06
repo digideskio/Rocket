@@ -8,12 +8,13 @@
 using namespace std;
 using namespace glm;
 
-int width = 512;
-int height = 512;
-GLuint win1;
-//GLuint win2;
+int width = 512; //window width
+int height = 512; //window height
+double aspectY = 40.0;
+GLuint win1; //first-person window
+//GLuint win2; //third-person window
 bool wireframe_mode = true;
-Spaceship ships[2];
+Spaceship ships[2]; //one Spaceship for first-person mode, one for third person mode
 
 void TimerFunc(int period)
 {
@@ -57,19 +58,22 @@ void DisplayFunc()
 {
 	GLReturnedError("Entering DisplayFunc");
 
-	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glClearColor(0.0f, 0.0f, 0.0f, 1.0f); //set background colot to black
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); //clear color and depth buffers
+	//set the camera
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gluPerspective(40.0, width / double(height), 1.0, 100.0);
+	gluPerspective(aspectY, width / double(height), 1.0, 100.0);
 	glViewport(0, 10, width, height);
 	glEnable(GL_DEPTH_TEST);
+	//set the models (rockets)
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	gluLookAt(0.0, 0.0, 6.5, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
-	glTranslated(0.0, 0.0, -5.0);
+	gluLookAt(0.0, 0.0, 4.5, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+	glTranslated(0.0, 0.0, -10.0);
 	glPushMatrix();
 	glTranslated(-11.0, -3.0, 0.0); //this translated was apparently so that the 4x4 grid would be more centered
+	//draw the grid of rockets
 	for (int i = 0; i < 4; i++)
 	{
 		for (int j = 0; j < 4; j++)
@@ -104,6 +108,31 @@ void ReshapeFunc(int w, int h)
 	glutPostRedisplay();
 }
 
+void SpecialFunc(int key, int x, int y)
+{
+	switch (key)
+	{
+	case GLUT_KEY_UP:
+
+	case GLUT_KEY_DOWN:
+
+	case GLUT_KEY_LEFT:
+
+	case GLUT_KEY_RIGHT:
+
+	case GLUT_KEY_PAGE_UP:
+		aspectY < 80.0 ? aspectY += 5.0 : aspectY += 0;
+		glutPostRedisplay();
+		break;
+	case GLUT_KEY_PAGE_DOWN:
+		aspectY > 10.0 ? aspectY -= 5.0 : aspectY -= 0;
+		glutPostRedisplay();
+		break;
+	default:
+		break;
+	}
+}
+
 int main(int argc, char* argv[])
 {
 	glutInit(&argc, argv);
@@ -115,6 +144,7 @@ int main(int argc, char* argv[])
 	glutReshapeFunc(ReshapeFunc);
 	glutKeyboardFunc(KeyboardFunc);
 	glutDisplayFunc(DisplayFunc);
+	glutSpecialFunc(SpecialFunc);
 
 	//win2 = glutCreateWindow("Third-Person");
 	//glutKeyboardFunc(KeyboardFunc);
