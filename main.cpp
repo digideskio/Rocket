@@ -60,7 +60,7 @@ void positionCamera()
 	vec4 p(50, 0, 0, 1);
 	mat4 m;
 	m = glm::rotate(m, radians(orientation.x), vec3(0, 1.0f, 0));
-	m = glm::rotate(m, radians(orientation.y), vec3(1.0f, 0, 0));
+	m = glm::rotate(m, radians(orientation.y), vec3(0, 0, 1.0f));
 	camera = vec3(m * p);
 }
 
@@ -219,9 +219,13 @@ void SpecialFunc(int key, int x, int y)
 	switch (key)
 	{
 	case GLUT_KEY_UP:
-
+		if(orientation.y < 89.0)
+			orientation.y += offset;
+		break;
 	case GLUT_KEY_DOWN:
-
+		if(orientation.y > -89.0)
+			orientation.y -= offset;
+		break;
 	case GLUT_KEY_LEFT:
 		orientation.x -= offset;
 		break;

@@ -8,4 +8,9 @@ w:          Toggle wireframe
 PageUp:     Zoom in
 
 PageDown:   Zoom out
+
+
 Left/Right: Move camera from side to side
+
+
+Up/Down:    Move camera up and down
