@@ -1,10 +1,11 @@
 Keybindings to date:
 
 
-Esc, x, q: Exit
+Esc, x, q:  Exit
 
-w:         Toggle wireframe
+w:          Toggle wireframe
 
-PageUp:    Zoom in
+PageUp:     Zoom in
 
-PageDown   Zoom out
+PageDown:   Zoom out
+Left/Right: Move camera from side to side

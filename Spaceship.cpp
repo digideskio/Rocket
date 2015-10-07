@@ -22,7 +22,7 @@ void Spaceship::draw()
 		glNewList(display_list_handle, GL_COMPILE);
 		glColor3d(1.0, 0.0, 0.0); //bright red
 		glScaled(1.1, 4.0, 1.1);
-		gluSphere(q, 1.0, 50, 50);
+		gluSphere(q, 1.0, 20, 20);
 		glScaled(0.91, 0.25, 0.91); //cancel out previous gluScaled
 		glPushMatrix();
 		glTranslated(0.0, -1.75, 0.0); //move the origin to an easier place for the engines and connectors
