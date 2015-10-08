@@ -12,15 +12,22 @@ int width = 512; //first window width
 int height = 512; //first window height
 int w2 = 1024; //second window width
 int h2 = 512; // second window height
-double aspectY = 40.0; //fov Y
+double fovY = 40.0; //fov Y
 
 vec3 camera;
+vec3 camera2;
 vec2 orientation;
 
 GLuint win1; //first-person window
 GLuint win2; //third-person window
 bool wireframe_mode = true;
 Spaceship ships[2]; //one Spaceship for first-person mode, one for third person mode
+GLuint sphere_handle = GLuint(-1);
+
+void drawText()
+{
+	//glutStrokeString() to draw text
+}
 
 void drawShips(int i)
 {
@@ -55,6 +62,25 @@ void drawShips(int i)
 	glPopMatrix();
 }
 
+void drawSphere()
+{
+	if (sphere_handle == GLuint(-1))
+	{
+		//GLUquadric* q = gluNewQuadric();
+		sphere_handle = glGenLists(1);
+		glNewList(sphere_handle, GL_COMPILE);
+		glPushMatrix();
+		//glTranslated(0.0, 0.0, 50.0);
+		glRotated(90.0, 0.0, 1.0, 0.0);
+		glutWireSphere(75.0, 50, 50);
+		//gluSphere(q, 75.0, 50, 50);
+		glPopMatrix();
+		glEndList();
+		//gluDeleteQuadric(q);
+	}
+	glCallList(sphere_handle);
+}
+
 void positionCamera()
 {
 	vec4 p(50, 0, 0, 1);
@@ -63,6 +89,14 @@ void positionCamera()
 	m = glm::rotate(m, radians(orientation.y), vec3(0, 0, 1.0f));
 	camera = vec3(m * p);
 }
+
+/*void positionCamera2()
+{
+	vec4 p(50, 0, 0, 1);
+	mat4 m;
+	m = glm::rotate(m, radians(90.0f), vec3(0, 1.0f, 0));
+	camera2 = vec3(m * p);
+}*/
 
 void drawAxes()
 {
@@ -131,7 +165,7 @@ void DisplayFunc()
 	//set the camera
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gluPerspective(aspectY, width / double(height), 1.0, 100.0);
+	gluPerspective(fovY, width / double(height), 1.0, 100.0);
 	glViewport(0, 10, width, height);
 	glEnable(GL_DEPTH_TEST);
 	//set the models (rockets)
@@ -148,52 +182,49 @@ void DisplayFunc2()
 {
 	GLReturnedError("Entering DisplayFunc2");
 
+	//positionCamera2();
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	//first camera
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	//gluPerspective(40, (w2 / 2.0) / double(h2), 1.0, 100.0);
-	glOrtho(-80, 80, -80, 80, -80, 80);
-	glViewport(0, 10, w2 / 2, h2);
+	glOrtho(-80, 80, -80, 80, 1, 100);
+	glViewport(0, 0, w2 / 2, h2);
 	glEnable(GL_DEPTH_TEST);
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	gluLookAt(0.0, 0.0, 0.0, w2 / 4.0, 0.0, 0.0, 0.0, 1.0, 0.0);
-	GLUquadric* q = gluNewQuadric();
+	gluLookAt(50.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
 	glPushMatrix();
-	glTranslated(60.0, 0.0, 0.0);
-	//glPushMatrix();
 	wireframe_mode = true;
-	gluSphere(q, 15.0, 30, 30); //frst sphere (left) for third person view
+	glTranslated(50.0, 0.0, 0.0);
+	double s1 = 0.9;
+	glScaled(s1, s1, s1);
+	drawSphere();
 	glPopMatrix();
-
-	glPushMatrix();
-	glTranslated(20.0, 0.0, 0.0);
+	/*glPushMatrix();
+	//glTranslated(0.0, 0.0, 60.0);
 	ships[1].draw();
-	glPopMatrix();
+	glPopMatrix();*/
 	//second camera
+	//glRotated(90, 0.0, 1.0, 0.0);
+	//glTranslated(w2 / 2.0, 0.0, 0.0);
 	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	//gluPerspective(40, w2 / double(h2), 1.0, 100.0);
-
-	glViewport(0, 10, w2, h2);
+	//glLoadIdentity();
+	glOrtho(-80, 80, -80, 80, 1, 200);
+	glViewport(w2 / 2, 0, w2 / 2, h2);
 	glEnable(GL_DEPTH_TEST);
 
 	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
-	gluLookAt(0.0, 0.0, 200.0, w2 * 0.75, 0.0, 0.0, 0.0, 1.0, 0.0);
-	GLUquadric* q2 = gluNewQuadric();
+	//glLoadIdentity();
+	gluLookAt(50.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+	//glRotated(90.0, 0.0, 1.0, 0.0);
 	glPushMatrix();
-	glTranslated(60.0, 0.0, 200.0);
-	//glPushMatrix();
-	wireframe_mode = true;
-	gluSphere(q2, 15.0, 30, 30); //second sphere
+	double s = 72.5;
+	glScaled(s, s, s);
+	glTranslated(0.0, 0.0, -5.0);
+	drawSphere();
 	glPopMatrix();
-
-	gluDeleteQuadric(q);
-	gluDeleteQuadric(q2);
 	glutSwapBuffers();
 }
 
@@ -233,10 +264,10 @@ void SpecialFunc(int key, int x, int y)
 		orientation.x += offset;
 		break;
 	case GLUT_KEY_PAGE_UP:
-		aspectY < 80.0 ? aspectY += 1.0 : aspectY += 0;
+		fovY < 80.0 ? fovY += 1.0 : fovY += 0;
 		break;
 	case GLUT_KEY_PAGE_DOWN:
-		aspectY > 10.0 ? aspectY -= 1.0 : aspectY -= 0;
+		fovY > 10.0 ? fovY -= 1.0 : fovY -= 0;
 		break;
 	default:
 		break;
