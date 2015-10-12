@@ -272,7 +272,8 @@ void SpecialFunc(int key, int x, int y)
 	default:
 		break;
 	}
-	glutPostRedisplay();
+	glutPostWindowRedisplay(win1);
+	glutPostWindowRedisplay(win2);
 }
 
 int main(int argc, char* argv[])
@@ -298,5 +299,6 @@ int main(int argc, char* argv[])
 	glutKeyboardFunc(KeyboardFunc);
 	glutDisplayFunc(DisplayFunc2);
 	glutSpecialFunc(SpecialFunc);
+
 	glutMainLoop();
 }
