@@ -13,7 +13,6 @@ int height = 512; //first window height
 int w2 = 1024; //second window width
 int h2 = 512; // second window height
 double fovY = 40.0; //fov Y
-//const unsigned char* TextX = "X Axis View";
 
 vec3 camera;
 vec3 camera2;
@@ -145,6 +144,21 @@ void DisplayFunc()
 	//glScaled(5.0, 5.0, 5.0);
 	drawShips(0);
 	//glScaled(0.2, 0.2, 0.2);
+	glPushMatrix();
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	glOrtho(0, width, 0, height, 0, 100);
+	glViewport(0, 0, width, height);
+
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	//glDisable(GL_DEPTH_TEST);
+	glScaled(0.3, 0.3, 0.3);
+	glTranslated(0.0, 0.0, -10.0);
+	glColor3d(0.8, 0.8, 0.8);
+	glutStrokeString(GLUT_STROKE_MONO_ROMAN, (const unsigned char*)"Perspective View");
+	//glEnable(GL_DEPTH_TEST);
+	glPopMatrix();
 	glutSwapBuffers();
 }
 
@@ -174,9 +188,11 @@ void DisplayFunc2()
 	drawSphere();
 	glPopMatrix();
 	glPushMatrix();
+	glLoadIdentity();
 	//glDisable(GL_DEPTH_TEST);
-	glScaled(0.09, 0.09, 0.09);
-	glTranslated(0.0, 0.0, 0.0);
+	glScaled(0.1, 0.1, 0.1);
+	glTranslated(0.0, -100.0, 0.0);
+	glColor3d(1.0, 1.0, 0.0);
 	glutStrokeString(GLUT_STROKE_MONO_ROMAN, (const unsigned char*)"Z Axis View");
 	//glEnable(GL_DEPTH_TEST);
 	glPopMatrix();
