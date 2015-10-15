@@ -68,6 +68,7 @@ void drawSphere()
 		glNewList(sphere_handle, GL_COMPILE);
 		glPushMatrix();
 		glColor3d(0.8, 0.8, 0.8);
+		glLineWidth(1.0);
 		glRotated(90.0, 0.0, 1.0, 0.0);
 		glutWireSphere(75.0, 50, 50);
 		glPopMatrix();
@@ -128,7 +129,7 @@ void DisplayFunc()
 	GLReturnedError("Entering DisplayFunc");
 
 	positionCamera();
-	glClearColor(0.0f, 0.0f, 0.0f, 1.0f); //set background colot to black
+	glClearColor(0.0f, 0.0f, 0.0f, 1.0f); //set background color to black
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); //clear color and depth buffers
 	//set the camera
 	glMatrixMode(GL_PROJECTION);
@@ -173,20 +174,16 @@ void DisplayFunc2()
 	drawSphere();
 	glPopMatrix();
 	glPushMatrix();
-	glDisable(GL_DEPTH_TEST);
-	glScaled(-100.0, -100.0, -100.0);
-	//glTranslated()
-	glutStrokeString(GLUT_STROKE_MONO_ROMAN, (const unsigned char*)"X Axis View");
-	glEnable(GL_DEPTH_TEST);
+	//glDisable(GL_DEPTH_TEST);
+	glScaled(0.09, 0.09, 0.09);
+	glTranslated(0.0, 0.0, 0.0);
+	glutStrokeString(GLUT_STROKE_MONO_ROMAN, (const unsigned char*)"Z Axis View");
+	//glEnable(GL_DEPTH_TEST);
 	glPopMatrix();
 	glPushMatrix();
 	glScaled(3.0, 3.0, 3.0);
 	drawShips(0);
 	glPopMatrix();
-	//glPopMatrix();
-	//second camera
-	//glRotated(90, 0.0, 1.0, 0.0);
-	//glTranslated(w2 / 2.0, 0.0, 0.0);
 	glMatrixMode(GL_PROJECTION);
 	//glLoadIdentity();
 	glOrtho(-80, 80, -80, 80, 1, 200);
@@ -202,6 +199,10 @@ void DisplayFunc2()
 	glScaled(s, s, s);
 	glTranslated(0.0, 0.0, -5.0);
 	drawSphere();
+	glPopMatrix();
+	glPushMatrix();
+	glScaled(250.0, 250.0, 250.0);
+	drawShips(1);
 	glPopMatrix();
 	glutSwapBuffers();
 }
@@ -230,7 +231,7 @@ void KeyboardFunc(unsigned char c, int x, int y)
 		glPolygonMode(GL_FRONT_AND_BACK, wireframe_mode ? GL_LINE : GL_FILL);
 		wireframe_mode = !wireframe_mode;
 		glutPostWindowRedisplay(win1);
-		//glutPostWindowRedisplay(win2);
+		glutPostWindowRedisplay(win2);
 		break;
 	case 27:
 	case 'x':
