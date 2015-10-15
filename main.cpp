@@ -154,9 +154,13 @@ void DisplayFunc()
 	glLoadIdentity();
 	//glDisable(GL_DEPTH_TEST);
 	glScaled(0.3, 0.3, 0.3);
-	glTranslated(0.0, 0.0, -10.0);
+	glTranslated(0.0, 10.0, 0.0);
 	glColor3d(0.8, 0.8, 0.8);
 	glutStrokeString(GLUT_STROKE_MONO_ROMAN, (const unsigned char*)"Perspective View");
+
+	glScaled(0.4, 0.4, 0.4);
+	glTranslated(-4150.0, 650.0, 0.0);
+	glutStrokeString(GLUT_STROKE_MONO_ROMAN, (const unsigned char*)"W: Toggle wireframe\nX: Exit\nLeft/Right, Up/Down, PageUp/PageDown");
 	//glEnable(GL_DEPTH_TEST);
 	glPopMatrix();
 	glutSwapBuffers();
