@@ -13,6 +13,7 @@ int height = 512; //first window height
 int w2 = 1024; //second window width
 int h2 = 512; // second window height
 double fovY = 40.0; //fov Y
+//const unsigned char* TextX = "X Axis View";
 
 vec3 camera;
 vec3 camera2;
@@ -34,17 +35,14 @@ void drawShips(int i)
 	//i must be 0 or 1
 
 	glPushMatrix();
-	glTranslated(-11.5, 0.0, 11.5);
+	glTranslated(-11.5, 0.0, 11.5); //figure out real math for this
+	//glScaled(10.0, 10.0, 10.0);
 	//draw the grid of rockets
 	for (int i = 0; i < 4; i++)
 	{
 		for (int j = 0; j < 4; j++)
 		{
-			//glTranslated(7.5, 0.0, 0.0);
-			//Spaceship s1;
 			ships[i].draw();
-			//GLUquadric* q = gluNewQuadric();
-			//gluSphere(q, 1.0, 10, 10);
 			glTranslated(7.5, 0.0, 0.0);
 		}
 		if (i % 2 == 0)
@@ -66,17 +64,14 @@ void drawSphere()
 {
 	if (sphere_handle == GLuint(-1))
 	{
-		//GLUquadric* q = gluNewQuadric();
 		sphere_handle = glGenLists(1);
 		glNewList(sphere_handle, GL_COMPILE);
 		glPushMatrix();
-		//glTranslated(0.0, 0.0, 50.0);
+		glColor3d(0.8, 0.8, 0.8);
 		glRotated(90.0, 0.0, 1.0, 0.0);
 		glutWireSphere(75.0, 50, 50);
-		//gluSphere(q, 75.0, 50, 50);
 		glPopMatrix();
 		glEndList();
-		//gluDeleteQuadric(q);
 	}
 	glCallList(sphere_handle);
 }
@@ -89,14 +84,6 @@ void positionCamera()
 	m = glm::rotate(m, radians(orientation.y), vec3(0, 0, 1.0f));
 	camera = vec3(m * p);
 }
-
-/*void positionCamera2()
-{
-	vec4 p(50, 0, 0, 1);
-	mat4 m;
-	m = glm::rotate(m, radians(90.0f), vec3(0, 1.0f, 0));
-	camera2 = vec3(m * p);
-}*/
 
 void drawAxes()
 {
@@ -120,25 +107,6 @@ void TimerFunc(int period)
 {
 	glutTimerFunc(period, TimerFunc, period);
 	glutPostRedisplay();
-}
-
-void KeyboardFunc(unsigned char c, int x, int y)
-{
-	switch (c)
-	{
-	case 'w':
-		glPolygonMode(GL_FRONT_AND_BACK, wireframe_mode ? GL_LINE : GL_FILL);
-		wireframe_mode = !wireframe_mode;
-		break;
-	case 27:
-	case 'x':
-	case 'q':
-		glutLeaveMainLoop();
-		break;
-
-	default:
-		break;
-	}
 }
 
 bool GLReturnedError(char* s)
@@ -165,7 +133,7 @@ void DisplayFunc()
 	//set the camera
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gluPerspective(fovY, width / double(height), 1.0, 100.0);
+	gluPerspective(fovY, width / double(height), 1.0, 100);
 	glViewport(0, 10, width, height);
 	glEnable(GL_DEPTH_TEST);
 	//set the models (rockets)
@@ -173,7 +141,9 @@ void DisplayFunc()
 	glLoadIdentity();
 	gluLookAt(camera.x, camera.y, camera.z, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
 	drawAxes();
+	//glScaled(5.0, 5.0, 5.0);
 	drawShips(0);
+	//glScaled(0.2, 0.2, 0.2);
 	glutSwapBuffers();
 }
 
@@ -182,7 +152,6 @@ void DisplayFunc2()
 {
 	GLReturnedError("Entering DisplayFunc2");
 
-	//positionCamera2();
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	//first camera
@@ -195,17 +164,26 @@ void DisplayFunc2()
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	gluLookAt(50.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+	//drawShips(1);
 	glPushMatrix();
-	wireframe_mode = true;
+	//wireframe_mode = true;
 	glTranslated(50.0, 0.0, 0.0);
 	double s1 = 0.9;
 	glScaled(s1, s1, s1);
 	drawSphere();
 	glPopMatrix();
-	/*glPushMatrix();
-	//glTranslated(0.0, 0.0, 60.0);
-	ships[1].draw();
-	glPopMatrix();*/
+	glPushMatrix();
+	glDisable(GL_DEPTH_TEST);
+	glScaled(-100.0, -100.0, -100.0);
+	//glTranslated()
+	glutStrokeString(GLUT_STROKE_MONO_ROMAN, (const unsigned char*)"X Axis View");
+	glEnable(GL_DEPTH_TEST);
+	glPopMatrix();
+	glPushMatrix();
+	glScaled(3.0, 3.0, 3.0);
+	drawShips(0);
+	glPopMatrix();
+	//glPopMatrix();
 	//second camera
 	//glRotated(90, 0.0, 1.0, 0.0);
 	//glTranslated(w2 / 2.0, 0.0, 0.0);
@@ -233,7 +211,7 @@ void ReshapeFunc(int w, int h)
 {
 	width = w;
 	height = h;
-	glutPostRedisplay();
+	glutPostWindowRedisplay(win1);
 }
 
 //Third Person
@@ -241,7 +219,28 @@ void ReshapeFunc2(int w, int h)
 {
 	w2 = w;
 	h2 = h;
-	glutPostRedisplay();
+	glutPostWindowRedisplay(win2);
+}
+
+void KeyboardFunc(unsigned char c, int x, int y)
+{
+	switch (c)
+	{
+	case 'w':
+		glPolygonMode(GL_FRONT_AND_BACK, wireframe_mode ? GL_LINE : GL_FILL);
+		wireframe_mode = !wireframe_mode;
+		glutPostWindowRedisplay(win1);
+		//glutPostWindowRedisplay(win2);
+		break;
+	case 27:
+	case 'x':
+	case 'q':
+		glutLeaveMainLoop();
+		break;
+
+	default:
+		break;
+	}
 }
 
 void SpecialFunc(int key, int x, int y)
@@ -280,6 +279,7 @@ int main(int argc, char* argv[])
 {
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH);
+	glutSetOption(GLUT_RENDERING_CONTEXT, GLUT_USE_CURRENT_CONTEXT);
 	glutInitWindowPosition(0, 0);
 	glutInitWindowSize(width, height);
 	win1 = glutCreateWindow("First-Person");
