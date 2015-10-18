@@ -8,20 +8,22 @@
 using namespace std;
 using namespace glm;
 
-int width = 512; //first window width
-int height = 512; //first window height
-int w2 = 1024; //second window width
-int h2 = 512; // second window height
-double fovY = 40.0; //fov Y
+int width = 512;        //first window width
+int height = 512;       //first window height
+int w2 = 1024;          //second window width
+int h2 = 512;           //second window height
+double fovY = 40.0;     //fov Y for first-person camera
+double r = 50.0;        //radius of the camera's sphere
+double nearPlane = 10.0;//near plane for first-person camera
+double farPlane = 50.0; //far plane for first-person camera
 
-vec3 camera;
-vec3 camera2;
-vec2 orientation;
+vec3 camera;            //first-person camera
+vec2 orientation;       //used or figuring out where on the sphere the camera is
 
-GLuint win1; //first-person window
-GLuint win2; //third-person window
+GLuint win1;            //first-person window
+GLuint win2;            //third-person window
 bool wireframe_mode = true;
-Spaceship ships[2]; //one Spaceship for first-person mode, one for third person mode
+Spaceship ships[2];     //one Spaceship for first-person mode, one for third person mode
 GLuint sphere_handle = GLuint(-1);
 
 void drawShips(int i)
@@ -60,10 +62,10 @@ void drawSphere()
 		sphere_handle = glGenLists(1);
 		glNewList(sphere_handle, GL_COMPILE);
 		glPushMatrix();
-		glColor3d(0.8, 0.8, 0.8);
-		glLineWidth(1.0);
+		glColor3d(0.8, 0.8, 0.8); //light grey
+		glLineWidth(1.0); //make the lines thinner
 		glRotated(90.0, 0.0, 1.0, 0.0);
-		glutWireSphere(75.0, 50, 50);
+		glutWireSphere(r, 50, 50);
 		glPopMatrix();
 		glEndList();
 	}
@@ -72,10 +74,10 @@ void drawSphere()
 
 void positionCamera()
 {
-	vec4 p(50, 0, 0, 1);
+	vec4 p(r, 0, 0, 1);
 	mat4 m;
-	m = glm::rotate(m, radians(orientation.x), vec3(0, 1.0f, 0));
-	m = glm::rotate(m, radians(orientation.y), vec3(0, 0, 1.0f));
+	m = rotate(m, radians(orientation.x), vec3(0, 1.0f, 0));
+	m = rotate(m, radians(orientation.y), vec3(0, 0, 1.0f));
 	camera = vec3(m * p);
 }
 
@@ -124,13 +126,13 @@ void DisplayFunc()
 	positionCamera();
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f); //set background color to black
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); //clear color and depth buffers
-	//set the camera
+	//set the camera lens
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gluPerspective(fovY, width / double(height), 1.0, 100);
+	gluPerspective(fovY, width / double(height), nearPlane, farPlane);
 	glViewport(0, 10, width, height);
 	glEnable(GL_DEPTH_TEST);
-	//set the models (rockets)
+	//set the models (rockets and camera position)
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	gluLookAt(camera.x, camera.y, camera.z, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
@@ -139,7 +141,7 @@ void DisplayFunc()
 	glPushMatrix();
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	glOrtho(0, width, 0, height, 0, 100);
+	glOrtho(0.0, width, 0.0, height, 0.0, 100.0);
 	glViewport(0, 0, width, height);
 
 	glMatrixMode(GL_MODELVIEW);
@@ -175,7 +177,7 @@ void DisplayFunc2()
 	gluLookAt(50.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
 	glPushMatrix();
 	glTranslated(50.0, 0.0, 0.0);
-	double s1 = 0.9;
+	double s1 = 1.2;
 	glScaled(s1, s1, s1);
 	drawSphere();
 	glPopMatrix();
@@ -212,7 +214,7 @@ void DisplayFunc2()
 	gluLookAt(50.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
 	glRotated(90.0, 0.0, 1.0, 0.0);
 	glTranslated(0.0, 0.0, 50.0);
-	double s = 0.9;
+	double s = 1.2;
 	glScaled(s, s, s);
 	drawSphere();
 	glScaled(3.0, 3.0, 3.0);

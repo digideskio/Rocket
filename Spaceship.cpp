@@ -10,6 +10,7 @@ Spaceship::Spaceship()
 
 void Spaceship::draw()
 {
+	//if how to draw a rocket hasn't been calculated yet, calculate it
 	if (display_list_handle == GLuint(-1))
 	{
 		GLUquadric* q = gluNewQuadric();
@@ -43,12 +44,12 @@ void Spaceship::drawEngine()
 	glTranslated(-2.0, 0.0, 0.0);
 	//draw
 	glScaled(0.5, 0.5, 0.5);
-	gluSphere(q, 1.0, 10, 10);
+	gluSphere(q, 1.0, 10, 10); //top of the engine
 	glTranslated(0.0, -3.0, 0.0);
-	gluSphere(q, 1.0, 10, 10);
+	gluSphere(q, 1.0, 10, 10); //bottom of the engine
 	glTranslated(0.0, 2.75, 0.0);
 	glRotated(90, 1.0, 0.0, 0.0);
-	gluCylinder(q, 1.0, 1.0, 3.0, 10, 10);
+	gluCylinder(q, 1.0, 1.0, 3.0, 10, 10); //middle of the engine
 	glPopMatrix();
 	gluDeleteQuadric(q);
 }
