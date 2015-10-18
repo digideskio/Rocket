@@ -24,10 +24,10 @@ bool wireframe_mode = true;
 Spaceship ships[2]; //one Spaceship for first-person mode, one for third person mode
 GLuint sphere_handle = GLuint(-1);
 
-void drawText()
+/*void drawText()
 {
 	//glutStrokeString() to draw text
-}
+}*/
 
 void drawShips(int i)
 {
@@ -192,37 +192,65 @@ void DisplayFunc2()
 	drawSphere();
 	glPopMatrix();
 	glPushMatrix();
-	glLoadIdentity();
-	//glDisable(GL_DEPTH_TEST);
-	glScaled(0.1, 0.1, 0.1);
-	glTranslated(0.0, -100.0, 0.0);
-	glColor3d(1.0, 1.0, 0.0);
-	glutStrokeString(GLUT_STROKE_MONO_ROMAN, (const unsigned char*)"Z Axis View");
-	//glEnable(GL_DEPTH_TEST);
-	glPopMatrix();
-	glPushMatrix();
 	glScaled(3.0, 3.0, 3.0);
 	drawShips(0);
 	glPopMatrix();
+
+	glPushMatrix();
 	glMatrixMode(GL_PROJECTION);
-	//glLoadIdentity();
-	glOrtho(-80, 80, -80, 80, 1, 200);
+	glLoadIdentity();
+	glOrtho(0, w2 / 2, 0, h2, 0, 100);
+	glViewport(0, 0, w2 / 2, h2);
+
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	//glDisable(GL_DEPTH_TEST);
+	glScaled(0.3, 0.3, 0.3);
+	glTranslated(0.0, 10.0, 0.0);
+	glColor3d(0.8, 0.8, 0.8);
+	glutStrokeString(GLUT_STROKE_MONO_ROMAN, (const unsigned char*)"Z Axis View");
+	glScaled(0.4, 0.4, 0.4);
+	glTranslated(-2850.0, 650.0, 0.0);
+	glutStrokeString(GLUT_STROKE_MONO_ROMAN, (const unsigned char*)"W: Toggle wireframe\nX: Exit\nLeft/Right, Up/Down, PageUp/PageDown");
+	//glEnable(GL_DEPTH_TEST);
+	glPopMatrix();
+
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	glOrtho(-80, 80, -80, 80, 1, 100);
+	//glOrtho(0.0, w2 / 2.0, 0, h2, 1, h2);
 	glViewport(w2 / 2, 0, w2 / 2, h2);
 	glEnable(GL_DEPTH_TEST);
 
 	glMatrixMode(GL_MODELVIEW);
-	//glLoadIdentity();
+	glLoadIdentity();
 	gluLookAt(50.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
-	//glRotated(90.0, 0.0, 1.0, 0.0);
-	glPushMatrix();
-	double s = 72.5;
+	glRotated(90.0, 0.0, 1.0, 0.0);
+	//glPushMatrix();
+	glTranslated(0.0, 0.0, 50.0);
+	double s = 0.9;
 	glScaled(s, s, s);
-	glTranslated(0.0, 0.0, -5.0);
+	//glTranslated(100.0, 100.0, 0.0);
 	drawSphere();
-	glPopMatrix();
-	glPushMatrix();
-	glScaled(250.0, 250.0, 250.0);
+	//glPopMatrix();
+	//glPushMatrix();
+	glScaled(3.0, 3.0, 3.0);
 	drawShips(1);
+	//glPopMatrix();
+	glPushMatrix();
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	glOrtho(0, w2 / 2, 0, h2, 0, 100);
+	glViewport(w2 / 2, 0, w2 / 2, h2);
+
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	//glDisable(GL_DEPTH_TEST);
+	glScaled(0.3, 0.3, 0.3);
+	glTranslated(0.0, 10.0, 0.0);
+	glColor3d(0.8, 0.8, 0.8);
+	glutStrokeString(GLUT_STROKE_MONO_ROMAN, (const unsigned char*)"X Axis View");
+	//glEnable(GL_DEPTH_TEST);
 	glPopMatrix();
 	glutSwapBuffers();
 }
