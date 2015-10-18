@@ -5,7 +5,6 @@ class Spaceship
 {
 public:
 	Spaceship();
-	void position();
 	void draw();
 private:
 	void drawEngine();
