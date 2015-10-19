@@ -20,11 +20,32 @@ double farPlane = 50.0; //far plane for first-person camera
 vec3 camera;            //first-person camera
 vec2 orientation;       //used or figuring out where on the sphere the camera is
 
+double nearPlane2 = 40.0;
+double farPlane2 = 0.0;
+
+double degree = glm::pi<double>() / 180.0;
+
+
+double fronTan(double fov)
+{
+	return nearPlane * tan((fov / 2) * degree);
+}
+
+double farTan(double fov)
+{
+	return farPlane * tan((fov / 2) * degree);
+}
+
+
+
+
+
 GLuint win1;            //first-person window
 GLuint win2;            //third-person window
 bool wireframe_mode = true;
 Spaceship ships[2];     //one Spaceship for first-person mode, one for third person mode
 GLuint sphere_handle = GLuint(-1);
+
 
 void drawShips(int i)
 {
@@ -61,13 +82,19 @@ void drawSphere()
 	{
 		sphere_handle = glGenLists(1);
 		glNewList(sphere_handle, GL_COMPILE);
-		glPushMatrix();
-		glColor3d(0.8, 0.8, 0.8); //light grey
-		glLineWidth(1.0); //make the lines thinner
-		glRotated(90.0, 0.0, 1.0, 0.0);
-		glutWireSphere(r, 50, 50);
-		glPopMatrix();
+		
+
+		glPushMatrix();//.......
+		glLineWidth(1.0);
+		//glRotated(90.0, 0.0, 1.0, 0.0);
+		glColor3d(125 / 255.0f, 125 / 255.0f, 125 / 255.0f);
+		glutWireSphere(50.0, 30, 30);
+		//gluSphere(q, 40.0, 30, 30);//sphere here
+		glPopMatrix();	//........
+
+		
 		glEndList();
+
 	}
 	glCallList(sphere_handle);
 }
@@ -118,6 +145,175 @@ bool GLReturnedError(char* s)
 	return return_error;
 }
 
+void drawFrontPlane()
+{
+	GLuint nearPlane_handle = GLuint(-1);
+
+	if (nearPlane_handle == GLuint(-1))
+	{
+		GLUquadric * q = gluNewQuadric();
+		nearPlane_handle = glGenLists(1);
+		glNewList(nearPlane_handle, GL_COMPILE);
+
+
+		//camarea sphere
+		glPushMatrix();//.......
+		glLineWidth(1.0);
+		glTranslated(camera.z, camera.y, camera.x);//translate
+		glColor3d(1.0, 1.0, 1.0);
+		gluSphere(q, 1.5, 30, 30);
+		glPopMatrix();	//........
+
+		//front plane spheres
+		glPushMatrix();//.......
+		glLineWidth(1.0);
+		glTranslated(-fronTan(fovY), fronTan(fovY), nearPlane2); //translate
+		glColor3d(1.0, 1.0, 1.0);
+		gluSphere(q, 0.75, 30, 30);
+		glPopMatrix();	//........
+
+		glPushMatrix();//.......
+		glLineWidth(1.0);
+		glTranslated(fronTan(fovY), fronTan(fovY), nearPlane2);//translate
+		glColor3d(1.0, 1.0, 1.0);
+		gluSphere(q, 0.75, 30, 30);
+		glPopMatrix();	//........
+
+		glPushMatrix();//.......
+		glLineWidth(1.0);
+		glTranslated(fronTan(fovY), -fronTan(fovY), nearPlane2);//translate
+		glColor3d(1.0, 1.0, 1.0);
+		gluSphere(q, 0.75, 30, 30);
+		glPopMatrix();	//........
+
+		glPushMatrix();//.......
+		glLineWidth(1.0);
+		glTranslated(-fronTan(fovY), -fronTan(fovY), nearPlane2);//translate
+		glColor3d(1.0, 1.0, 1.0);
+		gluSphere(q, 0.75, 30, 30);
+		glPopMatrix();	//........
+
+
+		glEndList();
+		gluDeleteQuadric(q);
+	}
+
+
+	glCallList(nearPlane_handle);
+}
+
+void drawRearPlane()
+{
+	GLuint farPlane_handle = GLuint(-1);
+
+	if (farPlane_handle == GLuint(-1))
+	{
+		GLUquadric * q = gluNewQuadric();
+		farPlane_handle = glGenLists(1);
+		glNewList(farPlane_handle, GL_COMPILE);
+
+		//rear plane spheres
+		glPushMatrix();//.......
+		glLineWidth(1.0);
+		glTranslated(-farTan(fovY), farTan(fovY), farPlane2); //translate
+		glColor3d(1.0, 1.0, 1.0);
+		gluSphere(q, 0.75, 30, 30);
+		glPopMatrix();	//........
+
+		glPushMatrix();//.......
+		glLineWidth(1.0);
+		glTranslated(farTan(fovY), farTan(fovY), farPlane2);//translate
+		glColor3d(1.0, 1.0, 1.0);
+		gluSphere(q, 0.75, 30, 30);
+		glPopMatrix();	//........
+
+		glPushMatrix();//.......
+		glLineWidth(1.0);
+		glTranslated(farTan(fovY), -farTan(fovY), farPlane2);//translate
+		glColor3d(1.0, 1.0, 1.0);
+		gluSphere(q, 0.75, 30, 30);
+		glPopMatrix();	//........
+
+		glPushMatrix();//.......
+		glLineWidth(1.0);
+		glTranslated(-farTan(fovY), -farTan(fovY), farPlane2);//translate
+		glColor3d(1.0, 1.0, 1.0);
+		gluSphere(q, 0.75, 30, 30);
+		glPopMatrix();	//........
+
+		glEndList();
+		gluDeleteQuadric(q);
+	}
+
+
+	glCallList(farPlane_handle);
+}
+
+void drawView()
+{
+
+	//drawFrontPlane();
+
+	//drawRearPlane();
+
+
+	//connect the dots front
+	glPushMatrix();
+
+	glBegin(GL_LINES);
+	//glLineWidth(5.0);
+
+	//connect front plane
+	glColor3d(1.0, 1.0, 1.0);
+	glVertex3d(-fronTan(fovY), fronTan(fovY), nearPlane2);
+	glVertex3d(fronTan(fovY), fronTan(fovY), nearPlane2);
+
+	glVertex3d(fronTan(fovY), fronTan(fovY), nearPlane2);
+	glVertex3d(fronTan(fovY), -fronTan(fovY), nearPlane2);
+
+	glVertex3d(fronTan(fovY), -fronTan(fovY), nearPlane2);
+	glVertex3d(-fronTan(fovY), -fronTan(fovY), nearPlane2);
+
+	glVertex3d(-fronTan(fovY), -fronTan(fovY), nearPlane2);
+	glVertex3d(-fronTan(fovY), fronTan(fovY), nearPlane2);
+
+	//connect front and rear
+	glColor3d(1.0, 1.0, 1.0);
+	glVertex3d(-fronTan(fovY), fronTan(fovY), nearPlane2);
+	glVertex3d(-farTan(fovY), farTan(fovY), farPlane2);
+
+	glVertex3d(fronTan(fovY), fronTan(fovY), nearPlane2);
+	glVertex3d(farTan(fovY), farTan(fovY), farPlane2);
+
+	glVertex3d(fronTan(fovY), -fronTan(fovY), nearPlane2);
+	glVertex3d(farTan(fovY), -farTan(fovY), farPlane2);
+
+	glVertex3d(-fronTan(fovY), -fronTan(fovY), nearPlane2);
+	glVertex3d(-farTan(fovY), -farTan(fovY), farPlane2);
+
+	//connect rear plane
+	glColor3d(1.0, 1.0, 1.0);
+	glVertex3d(-farTan(fovY), farTan(fovY), farPlane2);
+	glVertex3d(farTan(fovY), farTan(fovY), farPlane2);
+
+	glVertex3d(farTan(fovY), farTan(fovY), farPlane2);
+	glVertex3d(farTan(fovY), -farTan(fovY), farPlane2);
+
+	glVertex3d(farTan(fovY), -farTan(fovY), farPlane2);
+	glVertex3d(-farTan(fovY), -farTan(fovY), farPlane2);
+
+	glVertex3d(-farTan(fovY), -farTan(fovY), farPlane2);
+	glVertex3d(-farTan(fovY), farTan(fovY), farPlane2);
+
+	//camer point
+	glColor3d(1.0, 1.0, 1.0);
+	glVertex3d(camera.z, camera.y, camera.x);
+	glVertex3d(0.0, 0.0, 0.0);
+
+	glEnd();
+	glPopMatrix();
+}
+
 //First Person
 void DisplayFunc()
 {
@@ -126,7 +322,7 @@ void DisplayFunc()
 	positionCamera();
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f); //set background color to black
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); //clear color and depth buffers
-	//set the camera lens
+														//set the camera lens
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	gluPerspective(fovY, width / double(height), nearPlane, farPlane);
@@ -137,15 +333,17 @@ void DisplayFunc()
 	glLoadIdentity();
 	gluLookAt(camera.x, camera.y, camera.z, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
 	drawAxes();
-	drawShips(0);
+	drawShips(1);
+
+	//text
 	glPushMatrix();
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	glOrtho(0.0, width, 0.0, height, 0.0, 100.0);
 	glViewport(0, 0, width, height);
-
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
+
 	glScaled(0.3, 0.3, 0.3);
 	glTranslated(0.0, 10.0, 0.0);
 	glColor3d(0.8, 0.8, 0.8);
@@ -155,8 +353,10 @@ void DisplayFunc()
 	glTranslated(-4150.0, 650.0, 0.0);
 	glutStrokeString(GLUT_STROKE_MONO_ROMAN, (const unsigned char*)"W: Toggle wireframe\nX: Exit\nLeft/Right, Up/Down, PageUp/PageDown");
 	glPopMatrix();
+
 	glutSwapBuffers();
 }
+
 
 //Third Person
 void DisplayFunc2()
@@ -165,31 +365,32 @@ void DisplayFunc2()
 
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	//first camera
+
+	// z view
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	glOrtho(-80, 80, -80, 80, 1, 100);
+	glOrtho(-80, 80, -80, 80, -80, 80);
 	glViewport(0, 0, w2 / 2, h2);
 	glEnable(GL_DEPTH_TEST);
-
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	gluLookAt(50.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
-	glPushMatrix();
-	glTranslated(50.0, 0.0, 0.0);
-	double s1 = 1.2;
-	glScaled(s1, s1, s1);
+	gluLookAt(0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 1.0, 0.0);
+	//draw objects
 	drawSphere();
-	glPopMatrix();
+	drawFrontPlane();
+	drawRearPlane();
+	drawView();
+
 	glPushMatrix();
-	glScaled(3.0, 3.0, 3.0);
+	glScaled(2.0, 2.0, 2.0);
 	drawShips(0);
 	glPopMatrix();
 
+	//text
 	glPushMatrix();
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	glOrtho(0, w2 / 2, 0, h2, 0, 100);
+	glOrtho(0, w2 / 2, 0, h2, -10, 50);
 	glViewport(0, 0, w2 / 2, h2);
 
 	glMatrixMode(GL_MODELVIEW);
@@ -203,22 +404,27 @@ void DisplayFunc2()
 	glutStrokeString(GLUT_STROKE_MONO_ROMAN, (const unsigned char*)"W: Toggle wireframe\nX: Exit\nLeft/Right, Up/Down, PageUp/PageDown");
 	glPopMatrix();
 
+	//x view
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	glOrtho(-80, 80, -80, 80, 1, 100);
+	glOrtho(-80, 80, -80, 80, -80, 80);
 	glViewport(w2 / 2, 0, w2 / 2, h2);
 	glEnable(GL_DEPTH_TEST);
-
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	gluLookAt(50.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
-	glRotated(90.0, 0.0, 1.0, 0.0);
-	glTranslated(0.0, 0.0, 50.0);
-	double s = 1.2;
-	glScaled(s, s, s);
+	gluLookAt(0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+	//draw objects
 	drawSphere();
-	glScaled(3.0, 3.0, 3.0);
-	drawShips(1);
+	drawFrontPlane();
+	drawRearPlane();
+	drawView();
+
+	glPushMatrix();
+	glScaled(2.0, 2.0, 2.0);
+	drawShips(0);
+	glPopMatrix();
+
+	//text
 	glPushMatrix();
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
@@ -232,6 +438,7 @@ void DisplayFunc2()
 	glColor3d(0.8, 0.8, 0.8);
 	glutStrokeString(GLUT_STROKE_MONO_ROMAN, (const unsigned char*)"X Axis View");
 	glPopMatrix();
+
 	glutSwapBuffers();
 }
 
@@ -278,11 +485,11 @@ void SpecialFunc(int key, int x, int y)
 	switch (key)
 	{
 	case GLUT_KEY_UP:
-		if(orientation.y < 89.0)
+		if (orientation.y < 89.0)
 			orientation.y += offset;
 		break;
 	case GLUT_KEY_DOWN:
-		if(orientation.y > -89.0)
+		if (orientation.y > -89.0)
 			orientation.y -= offset;
 		break;
 	case GLUT_KEY_LEFT:
